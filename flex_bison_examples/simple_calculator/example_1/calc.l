@@ -6,19 +6,24 @@
 
 %{
         #include <stdio.h>
+        #include <stdlib.h>
         #include "calc.tab.h"
 %}
 
 %%
 
-"+"     { return ADD; }
-"-"     { return SUB; }
-"*"     { return MUL; }
-"/"     { return DIV; }
-"|"     { return ABS; }
-[0-9]+  { yylval = atoi(yytext); return NUMBER; }
-\n      { return EOL; }
-[ \t]   { /* ignore whitespace */ }
-.       { printf("Mystery character %c\n", *yytext); }
-
+"+"             { return ADD; }
+"-"             { return SUB; }
+"*"             { return MUL; }
+"/"             { return DIV; }
+"&"             { return AND; }
+"|"             { return ABS; }
+[0-9]+          { yylval = strtol(yytext, NULL, 10); return NUMBER; }
+0x[a-f0-9]+     { yylval = strtol(yytext, NULL, 16); return NUMBER; }
+\n              { return EOL; }
+[ \t]           { /* ignore whitespace */ }
+"("             { return OP; }
+")"             { return CP; }
+"//".*          { return COMM; } /* ignore comments */
+.               { printf("Mystery character %c\n", *yytext); }
 %%
